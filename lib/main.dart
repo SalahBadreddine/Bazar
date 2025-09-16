@@ -15,6 +15,7 @@ class MyApp extends StatelessWidget {
       title: 'Bazar',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        fontFamily: "Futura",
       ),
       home: const WidgetTree(),
     );

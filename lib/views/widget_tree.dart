@@ -1,3 +1,4 @@
+import 'package:bazar/views/pages/onboarding_page.dart';
 import 'package:flutter/material.dart';
 
 class WidgetTree extends StatelessWidget {
@@ -5,6 +6,6 @@ class WidgetTree extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return OnboardingPage();
   }
 }
