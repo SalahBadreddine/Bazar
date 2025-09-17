@@ -1,5 +1,6 @@
 import 'package:bazar/constants/app_colors.dart';
 import 'package:bazar/constants/ktext_styles.dart';
+import 'package:bazar/views/pages/forgot_password_page.dart';
 import 'package:bazar/views/widgets/purple_button_widget.dart';
 import 'package:bazar/views/widgets/text_field_authentication_widget.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +50,7 @@ class _SignInPageState extends State<SignInPage> {
                   isPassword: true,
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder:(context) => const ForgotPasswordPage(),)),
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.all(0),
                     minimumSize: Size.zero,

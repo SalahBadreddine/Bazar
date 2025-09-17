@@ -1,5 +1,6 @@
 import 'package:bazar/constants/app_colors.dart';
 import 'package:bazar/constants/ktext_styles.dart';
+import 'package:bazar/views/pages/email_verification_page.dart';
 import 'package:bazar/views/widgets/purple_button_widget.dart';
 import 'package:bazar/views/widgets/text_field_authentication_widget.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +64,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 25.0),
-                  child: PurpleButtonWidget(text: "Register", onPressed: () {}),
+                  child: PurpleButtonWidget(text: "Register", onPressed: () => Navigator.push(context, MaterialPageRoute(builder:(context) => const EmailVerificationPage(resetPassword: false,),))),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
