@@ -1,4 +1,6 @@
 import 'package:bazar/constants/app_colors.dart';
+import 'package:bazar/constants/ktext_styles.dart';
+import 'package:bazar/views/pages/vendors_page.dart';
 import 'package:bazar/views/widgets/purple_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -44,11 +46,7 @@ class _HomePageState extends State<HomePage> {
         ),
         title: Text(
           "Home",
-          style: TextStyle(
-            color: AppColors.greyscale900,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+          style: KtextStyles.heading
         ),
         centerTitle: true,
         actionsPadding: EdgeInsets.only(right: 20),
@@ -256,7 +254,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () => Navigator.push(context, MaterialPageRoute(builder:(context) => const VendorsPage(),)),
                         child: Text(
                           "See all",
                           style: TextStyle(
