@@ -1,6 +1,7 @@
 import 'package:bazar/constants/app_colors.dart';
 import 'package:bazar/constants/ktext_styles.dart';
 import 'package:bazar/views/pages/forgot_password_page.dart';
+import 'package:bazar/views/pages/home_page.dart';
 import 'package:bazar/views/widgets/purple_button_widget.dart';
 import 'package:bazar/views/widgets/text_field_authentication_widget.dart';
 import 'package:flutter/material.dart';
@@ -69,7 +70,7 @@ class _SignInPageState extends State<SignInPage> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 25.0),
-              child: PurpleButtonWidget(text: "Log in", onPressed: () {}),
+              child: PurpleButtonWidget(text: "Log in", onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder:(context) => const HomePage(),))),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
