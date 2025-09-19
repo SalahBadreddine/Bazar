@@ -1,5 +1,6 @@
 import 'package:bazar/constants/app_colors.dart';
 import 'package:bazar/constants/ktext_styles.dart';
+import 'package:bazar/views/pages/book_details_page.dart';
 import 'package:bazar/views/pages/vendors_page.dart';
 import 'package:bazar/views/widgets/purple_button_widget.dart';
 import 'package:flutter/material.dart';
@@ -13,11 +14,22 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  static const String lorem =
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Viverra dignissim ac ac ac. Nibh et sed ac, eget malesuada.";
   PageController _pageController = PageController(initialPage: 0);
-  List<List<String>> topbooks = [
-    ["assets/images/book1.png", "The Kite Runner", "14.99"],
-    ["assets/images/book2.jpg", "The Subtle Art", "20.99"],
-    ["assets/images/book3.jpg", "The Art Of War", "10.99"],
+  List<List<dynamic>> topbooks = [
+    [
+      "assets/images/book1.png",
+      "The Kite Runner",
+      "14.99",
+      "assets/images/vendor3.png",
+      lorem,
+      4
+    ],
+    ["assets/images/book2.jpg", "The Subtle Art", "20.99", "assets/images/vendor2.png", lorem, 3],
+    ["assets/images/book3.jpg", "The Art Of War", "10.99",  "assets/images/vendor4.png",
+      lorem,
+      5],
   ];
   List<String> bestvendors = [
     "assets/images/vendor1.gif",
@@ -44,10 +56,7 @@ class _HomePageState extends State<HomePage> {
           color: AppColors.greyscale900,
           size: 30,
         ),
-        title: Text(
-          "Home",
-          style: KtextStyles.heading
-        ),
+        title: Text("Home", style: KtextStyles.heading),
         centerTitle: true,
         actionsPadding: EdgeInsets.only(right: 20),
         actions: [
@@ -203,36 +212,44 @@ class _HomePageState extends State<HomePage> {
                       spacing: 10,
                       children: List.generate(
                         topbooks.length,
-                        (index) => Column(
-                          spacing: 5,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadiusGeometry.circular(8),
-                              child: Image.asset(
-                                topbooks.elementAt(index)[0],
-                                width: 127,
-                                height: 150,
-                                fit: BoxFit.cover,
-                              ),
+                        (index) => GestureDetector(
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BookDetailsPage(bookImage: topbooks.elementAt(index)[0], title: topbooks.elementAt(index)[1], vendorImage: topbooks.elementAt(index)[3], description: topbooks.elementAt(index)[4], bookReview: topbooks.elementAt(index)[5],),
                             ),
-                            Text(
-                              topbooks.elementAt(index)[1],
-                              style: TextStyle(
-                                color: AppColors.greyscale900,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14,
+                          ),
+                          child: Column(
+                            spacing: 5,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadiusGeometry.circular(8),
+                                child: Image.asset(
+                                  topbooks.elementAt(index)[0],
+                                  width: 127,
+                                  height: 150,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                            ),
-                            Text(
-                              "\$${topbooks.elementAt(index)[2]}",
-                              style: TextStyle(
-                                color: AppColors.primary500,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
+                              Text(
+                                topbooks.elementAt(index)[1],
+                                style: TextStyle(
+                                  color: AppColors.greyscale900,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14,
+                                ),
                               ),
-                            ),
-                          ],
+                              Text(
+                                "\$${topbooks.elementAt(index)[2]}",
+                                style: TextStyle(
+                                  color: AppColors.primary500,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -254,7 +271,12 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       TextButton(
-                        onPressed: () => Navigator.push(context, MaterialPageRoute(builder:(context) => const VendorsPage(),)),
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const VendorsPage(),
+                          ),
+                        ),
                         child: Text(
                           "See all",
                           style: TextStyle(
