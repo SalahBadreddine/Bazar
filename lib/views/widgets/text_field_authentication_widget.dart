@@ -8,6 +8,7 @@ class TextFieldAuthenticationWidget extends StatefulWidget {
     required this.title,
     required this.hintText,
     required this.isPassword,
+    this.initialText,
     this.prefixIcon,
   });
 
@@ -15,6 +16,7 @@ class TextFieldAuthenticationWidget extends StatefulWidget {
   final String hintText;
   final bool isPassword;
   final Widget? prefixIcon;
+  final String? initialText;
 
   @override
   State<TextFieldAuthenticationWidget> createState() =>
@@ -32,6 +34,7 @@ class _TextFieldAuthenticationWidgetState
         Text(widget.title, style: KtextStyles.bodymedium14),
         SizedBox(height: 8),
         TextFormField(
+          initialValue: widget.initialText,
           obscureText: widget.isPassword ? hidePassword : false,
           style: KtextStyles.bodymedium16,
           decoration: InputDecoration(

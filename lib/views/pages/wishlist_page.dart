@@ -19,10 +19,6 @@ class WishlistPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppColors.white,
         automaticallyImplyLeading: false,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: Icon(Icons.arrow_back, color: AppColors.greyscale900, size: 30),
-        ),
         title: Text("Your Wishlist", style: KtextStyles.heading),
       ),
       body: Padding(

@@ -1,6 +1,7 @@
 import 'package:bazar/constants/app_colors.dart';
 import 'package:bazar/views/pages/category_page.dart';
 import 'package:bazar/views/pages/home_page.dart';
+import 'package:bazar/views/pages/profile_page.dart';
 import 'package:bazar/views/pages/wishlist_page.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,7 @@ class _MainPageState extends State<MainPage> {
     const HomePage(),   
     const CategoryPage(),
     const WishlistPage(),
-    Center(child: Text("Profile Page")),  
+    const ProfilePage(),
   ];
 
   void _onItemTapped(int index) {

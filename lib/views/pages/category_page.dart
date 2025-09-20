@@ -45,13 +45,9 @@ class _CategoryPageState extends State<CategoryPage> {
         automaticallyImplyLeading: false,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: Icon(Icons.arrow_back, color: AppColors.greyscale900, size: 30),
+          icon: Icon(Icons.search_outlined, color: AppColors.greyscale900, size: 30),
         ),
         title: Text("Category", style: KtextStyles.heading),
-        actions: [
-          Icon(Icons.search_outlined, color: AppColors.greyscale900, size: 30),
-        ],
-        actionsPadding: EdgeInsets.only(right: 20),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
