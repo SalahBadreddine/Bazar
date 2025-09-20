@@ -1,7 +1,7 @@
 import 'package:bazar/constants/app_colors.dart';
 import 'package:bazar/constants/ktext_styles.dart';
-import 'package:bazar/views/pages/book_details_page.dart';
 import 'package:bazar/views/pages/vendors_page.dart';
+import 'package:bazar/views/widgets/book_card_widget.dart';
 import 'package:bazar/views/widgets/purple_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -24,12 +24,24 @@ class _HomePageState extends State<HomePage> {
       "14.99",
       "assets/images/vendor3.png",
       lorem,
-      4
+      4,
     ],
-    ["assets/images/book2.jpg", "The Subtle Art", "20.99", "assets/images/vendor2.png", lorem, 3],
-    ["assets/images/book3.jpg", "The Art Of War", "10.99",  "assets/images/vendor4.png",
+    [
+      "assets/images/book2.jpg",
+      "The Subtle Art",
+      "20.99",
+      "assets/images/vendor2.png",
       lorem,
-      5],
+      3,
+    ],
+    [
+      "assets/images/book3.jpg",
+      "The Art Of War",
+      "10.99",
+      "assets/images/vendor4.png",
+      lorem,
+      5,
+    ],
   ];
   List<String> bestvendors = [
     "assets/images/vendor1.gif",
@@ -43,7 +55,7 @@ class _HomePageState extends State<HomePage> {
     ["assets/images/author2.png", "Tess Gunty", "Novelist"],
     ["assets/images/author3.png", "Richard Perston", "Writer"],
   ];
-  int _currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,38 +77,6 @@ class _HomePageState extends State<HomePage> {
             color: AppColors.greyscale900,
             size: 30,
           ),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: AppColors.greyscale50,
-        iconSize: 30,
-        currentIndex: _currentIndex,
-        onTap: (value) => setState(() {
-          _currentIndex = value;
-        }),
-        selectedLabelStyle: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-        ),
-        unselectedLabelStyle: TextStyle(
-          color: AppColors.greyscale500,
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-        ),
-        selectedItemColor: AppColors.primary500,
-        unselectedItemColor: AppColors.greyscale500,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.category),
-            label: "Category",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: "Wishlist",
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
         ],
       ),
       body: SingleChildScrollView(
@@ -212,45 +192,8 @@ class _HomePageState extends State<HomePage> {
                       spacing: 10,
                       children: List.generate(
                         topbooks.length,
-                        (index) => GestureDetector(
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BookDetailsPage(bookImage: topbooks.elementAt(index)[0], title: topbooks.elementAt(index)[1], vendorImage: topbooks.elementAt(index)[3], description: topbooks.elementAt(index)[4], bookReview: topbooks.elementAt(index)[5],),
-                            ),
-                          ),
-                          child: Column(
-                            spacing: 5,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadiusGeometry.circular(8),
-                                child: Image.asset(
-                                  topbooks.elementAt(index)[0],
-                                  width: 127,
-                                  height: 150,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              Text(
-                                topbooks.elementAt(index)[1],
-                                style: TextStyle(
-                                  color: AppColors.greyscale900,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              Text(
-                                "\$${topbooks.elementAt(index)[2]}",
-                                style: TextStyle(
-                                  color: AppColors.primary500,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        (index) =>
+                            BookCardWidget(book: topbooks.elementAt(index), imagewidth: 127,),
                       ),
                     ),
                   ),
