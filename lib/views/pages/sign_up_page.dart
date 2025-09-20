@@ -1,10 +1,14 @@
 import 'package:bazar/constants/app_colors.dart';
 import 'package:bazar/constants/ktext_styles.dart';
+import 'package:bazar/models/user_model.dart';
+import 'package:bazar/providers/user_provider.dart';
 import 'package:bazar/views/pages/email_verification_page.dart';
 import 'package:bazar/views/pages/sign_in_page.dart';
 import 'package:bazar/views/widgets/purple_button_widget.dart';
 import 'package:bazar/views/widgets/text_field_authentication_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -14,6 +18,9 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,16 +54,19 @@ class _SignUpPageState extends State<SignUpPage> {
                   spacing: 15,
                   children: [
                     TextFieldAuthenticationWidget(
+                      controller: nameController,
                       title: "Name",
                       hintText: "Your name",
                       isPassword: false,
                     ),
                     TextFieldAuthenticationWidget(
+                      controller: emailController,
                       title: "Email",
                       hintText: "Your email",
                       isPassword: false,
                     ),
                     TextFieldAuthenticationWidget(
+                      controller: passwordController,
                       title: "Password",
                       hintText: "Your password",
                       isPassword: true,
@@ -65,7 +75,78 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 25.0),
-                  child: PurpleButtonWidget(text: "Register", onPressed: () => Navigator.push(context, MaterialPageRoute(builder:(context) => const EmailVerificationPage(resetPassword: false,),))),
+                  child: PurpleButtonWidget(
+                    text: "Register",
+                    onPressed: () async {
+                      final supabase = Supabase.instance.client;
+                      final email = emailController.text.trim();
+                      final password = passwordController.text.trim();
+                      final fullname = nameController.text.trim();
+
+                      if (email.isEmpty ||
+                          password.isEmpty ||
+                          fullname.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("All fields are required")),
+                        );
+                        return;
+                      }
+
+                      try {
+                        final res = await supabase.auth.signUp(
+                          email: email,
+                          password: password,
+                        );
+
+                        final userId = res.user?.id;
+
+                        if (userId != null) {
+                          await supabase.from('user_profiles').upsert({
+                            'id': userId,
+                            'email': email,
+                            'fullname': fullname,
+                          });
+                        }
+
+                        if (userId != null) {
+                          // Fetch profile
+                          final profile = await supabase
+                              .from('user_profiles')
+                              .select()
+                              .eq('id', userId)
+                              .single();
+
+                          final authUser = res.user!.toJson();
+
+                          // Create UserModel
+                          final userModel = UserModel.fromMap(
+                            authUser,
+                            profile,
+                          );
+
+                          // Save in provider
+                          Provider.of<UserProvider>(
+                            context,
+                            listen: false,
+                          ).setUser(userModel);
+                        }
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const EmailVerificationPage(
+                              resetPassword: false,
+                            ),
+                          ),
+                        );
+                      } catch (e) {
+                        print(e);
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text("Error: $e")));
+                      }
+                    },
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -80,7 +161,12 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     SizedBox(width: 5),
                     TextButton(
-                      onPressed: () => Navigator.push(context, MaterialPageRoute(builder:(context) => const SignInPage(),)),
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SignInPage(),
+                        ),
+                      ),
                       style: TextButton.styleFrom(
                         padding: EdgeInsets.all(0),
                         minimumSize: Size.zero,
@@ -104,21 +190,20 @@ class _SignUpPageState extends State<SignUpPage> {
               child: RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
-                text: "By clicking Register, you agree to our \n",
-                style: TextStyle(
-                  color: AppColors.greyscale500,
-                  fontWeight: FontWeight.w700
+                  text: "By clicking Register, you agree to our \n",
+                  style: TextStyle(
+                    color: AppColors.greyscale500,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: "Terms and Data Policy.",
+                      style: TextStyle(color: AppColors.primary500),
+                    ),
+                  ],
                 ),
-                children: [
-                  TextSpan(
-                    text: "Terms and Data Policy.",
-                    style: TextStyle(
-                      color: AppColors.primary500
-                    )
-                  )
-                ]
-              )),
-            )
+              ),
+            ),
           ],
         ),
       ),

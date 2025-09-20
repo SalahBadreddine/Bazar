@@ -1,6 +1,6 @@
 import 'package:bazar/constants/app_colors.dart';
 import 'package:bazar/constants/ktext_styles.dart';
-import 'package:bazar/views/pages/home_page.dart';
+import 'package:bazar/views/pages/main_page.dart';
 import 'package:bazar/views/pages/new_password_page.dart';
 import 'package:bazar/views/pages/success_page.dart';
 import 'package:bazar/views/widgets/purple_button_widget.dart';
@@ -121,7 +121,7 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
                           subtitle:
                               "your account is complete, please enjoy the best menu from us",
                           buttonText: "Get Started",
-                          onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder:(context) => const HomePage(),)),
+                          onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder:(context) => const MainPage(),)),
                         ),
                 ),
               ),

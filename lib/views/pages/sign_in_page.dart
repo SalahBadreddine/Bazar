@@ -1,10 +1,14 @@
 import 'package:bazar/constants/app_colors.dart';
 import 'package:bazar/constants/ktext_styles.dart';
+import 'package:bazar/models/user_model.dart';
+import 'package:bazar/providers/user_provider.dart';
 import 'package:bazar/views/pages/forgot_password_page.dart';
 import 'package:bazar/views/pages/main_page.dart';
 import 'package:bazar/views/widgets/purple_button_widget.dart';
 import 'package:bazar/views/widgets/text_field_authentication_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -14,6 +18,8 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,11 +47,13 @@ class _SignInPageState extends State<SignInPage> {
               spacing: 15,
               children: [
                 TextFieldAuthenticationWidget(
+                  controller: emailController,
                   title: "Email",
                   hintText: "Your email",
                   isPassword: false,
                 ),
                 TextFieldAuthenticationWidget(
+                  controller: passwordController,
                   title: "Password",
                   hintText: "Your password",
                   isPassword: true,
@@ -70,7 +78,55 @@ class _SignInPageState extends State<SignInPage> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 25.0),
-              child: PurpleButtonWidget(text: "Log in", onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder:(context) => const MainPage(),))),
+              child: PurpleButtonWidget(text: "Log in", onPressed: () => Navigator.push(context, MaterialPageRoute(builder:(context) => const MainPage(),)) // () async {
+              //   final email = emailController.text.trim();
+              //   final password = passwordController.text.trim();
+              //   final supabase = Supabase.instance.client;
+                
+              //   if (email.isEmpty || password.isEmpty) {
+              //     ScaffoldMessenger.of(context).showSnackBar(
+              //       SnackBar(content: Text("Email and password are required")),
+              //     );
+              //     return;
+              //   }
+
+              //   try {
+              //     // 1. Authenticate
+              //     final res = await supabase.auth.signInWithPassword(
+              //       email: email,
+              //       password: password,
+              //     );
+
+              //     final userId = res.user?.id;
+              //     if (userId == null) {
+              //       throw Exception("User not found");
+              //     }
+
+              //     // 2. Fetch profile
+              //     final profile = await supabase
+              //         .from('user_profiles')
+              //         .select()
+              //         .eq('id', userId)
+              //         .single();
+
+              //     // 3. Save to Provider
+              //     final authUser = res.user!.toJson();
+              //     final userModel = UserModel.fromMap(authUser, profile);
+              //     Provider.of<UserProvider>(context, listen: false).setUser(userModel);
+
+              //     // 4. Navigate to main page
+              //     Navigator.pushReplacement(
+              //       context,
+              //       MaterialPageRoute(builder: (context) => const MainPage()),
+              //     );
+              //   } catch (e) {
+              //     print(e);
+              //     ScaffoldMessenger.of(context).showSnackBar(
+              //       SnackBar(content: Text("Login failed: $e")),
+              //     );
+              //   }
+              // }),
+              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

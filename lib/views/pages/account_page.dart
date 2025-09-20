@@ -1,8 +1,10 @@
 import 'package:bazar/constants/app_colors.dart';
 import 'package:bazar/constants/ktext_styles.dart';
+import 'package:bazar/providers/user_provider.dart';
 import 'package:bazar/views/widgets/purple_button_widget.dart';
 import 'package:bazar/views/widgets/text_field_authentication_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
@@ -12,8 +14,22 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+    nameController.text = user?.username ?? "";
+    emailController.text = user?.email ?? "";
+  }
+
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserProvider>(context).user;
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
@@ -63,18 +79,19 @@ class _AccountPageState extends State<AccountPage> {
               spacing: 20,
               children: [
                 TextFieldAuthenticationWidget(
+                  controller: nameController,
                   title: "Full Name",
                   hintText: "Your full name",
                   isPassword: false,
-                  initialText: "Salah Badreddine",
                 ),
                 TextFieldAuthenticationWidget(
+                  controller: emailController,
                   title: "Email",
                   hintText: "Your email",
                   isPassword: false,
-                  initialText: "salah.badreddine@gmail.com",
                 ),
                 TextFieldAuthenticationWidget(
+                  controller: phoneController,
                   title: "Phone Number",
                   hintText: "Your phone number",
                   isPassword: false,
@@ -82,9 +99,9 @@ class _AccountPageState extends State<AccountPage> {
                     Icons.phone_outlined,
                     color: AppColors.primary500,
                   ),
-                  initialText: "(+213) 672186755",
                 ),
                 TextFieldAuthenticationWidget(
+                  controller: passwordController,
                   title: "Password",
                   hintText: "Your password",
                   isPassword: true,

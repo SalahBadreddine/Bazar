@@ -13,6 +13,7 @@ class ResetPasswordEmailPage extends StatefulWidget {
 }
 
 class _ResetPasswordEmailPageState extends State<ResetPasswordEmailPage> {
+  TextEditingController emailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,7 +43,7 @@ class _ResetPasswordEmailPageState extends State<ResetPasswordEmailPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: TextFieldAuthenticationWidget(title: "Email", hintText: "Your email", isPassword: false),
+                  child: TextFieldAuthenticationWidget(controller: emailController, title: "Email", hintText: "Your email", isPassword: false),
                 ),
                 PurpleButtonWidget(text: "Send", onPressed: () => Navigator.push(context, MaterialPageRoute(builder:(context) => const EmailVerificationPage(resetPassword: true,),))),
               ],

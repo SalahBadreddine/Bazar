@@ -13,6 +13,7 @@ class ResetPasswordPhonePage extends StatefulWidget {
 }
 
 class _ResetPasswordPhonePageState extends State<ResetPasswordPhonePage> {
+  TextEditingController phoneController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,9 +43,23 @@ class _ResetPasswordPhonePageState extends State<ResetPasswordPhonePage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: TextFieldAuthenticationWidget(title: "Phone number", hintText: "(+213) 612345678", isPassword: false),
+                  child: TextFieldAuthenticationWidget(
+                    controller: phoneController,
+                    title: "Phone number",
+                    hintText: "(+213) 612345678",
+                    isPassword: false,
+                  ),
                 ),
-                PurpleButtonWidget(text: "Send", onPressed: () => Navigator.push(context, MaterialPageRoute(builder:(context) => const PhoneVerificationPage(resetPassword: true,),))),
+                PurpleButtonWidget(
+                  text: "Send",
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          const PhoneVerificationPage(resetPassword: true),
+                    ),
+                  ),
+                ),
               ],
             ),
           ],

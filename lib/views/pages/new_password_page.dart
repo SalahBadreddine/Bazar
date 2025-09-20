@@ -15,6 +15,9 @@ class NewPasswordPage extends StatefulWidget {
 }
 
 class _NewPasswordPageState extends State<NewPasswordPage> {
+    TextEditingController passwordController = TextEditingController();
+    TextEditingController confirmpasswordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,8 +49,8 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                 Column(
                   spacing: 10,
                   children: [
-                    TextFieldAuthenticationWidget(title: "New Password", hintText: "Your password", isPassword: true),
-                    TextFieldAuthenticationWidget(title: "Confirm Password", hintText: "Your password", isPassword: true),
+                    TextFieldAuthenticationWidget(controller: passwordController, title: "New Password", hintText: "Your password", isPassword: true),
+                    TextFieldAuthenticationWidget(controller: confirmpasswordController, title: "Confirm Password", hintText: "Your password", isPassword: true),
                   ],
                 ),
                 SizedBox(height: 50),

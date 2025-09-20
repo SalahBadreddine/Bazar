@@ -13,6 +13,8 @@ class PhoneNumberInputPage extends StatefulWidget {
 }
 
 class _PhoneNumberInputPageState extends State<PhoneNumberInputPage> {
+    TextEditingController phoneController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,6 +44,7 @@ class _PhoneNumberInputPageState extends State<PhoneNumberInputPage> {
             ),
             SizedBox(height: 30),
             TextFieldAuthenticationWidget(
+              controller: phoneController,
               title: "Phone Number",
               hintText: "(+213) 612345678",
               isPassword: false,
