@@ -2,6 +2,7 @@ import 'package:bazar/constants/app_colors.dart';
 import 'package:bazar/constants/ktext_styles.dart';
 import 'package:bazar/views/widgets/book_card_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});
@@ -11,8 +12,6 @@ class CategoryPage extends StatefulWidget {
 }
 
 class _CategoryPageState extends State<CategoryPage> {
-  static const String lorem =
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Viverra dignissim ac ac ac. Nibh et sed ac, eget malesuada.";
   List<String> categories = [
     "All",
     "Books",
@@ -21,20 +20,62 @@ class _CategoryPageState extends State<CategoryPage> {
     "Stationary",
   ];
   int _selectedCategory = 0;
-  List<List<dynamic>> books = [
-    [
-      "assets/images/book1.png",
-      "The Kite Runner",
-      "14.99",
-      "assets/images/vendor3.png",
-      lorem,
-      4
-    ],
-    ["assets/images/book2.jpg", "The Subtle Art", "20.99", "assets/images/vendor2.png", lorem, 3],
-    ["assets/images/book3.jpg", "The Art Of War", "10.99",  "assets/images/vendor4.png",
-      lorem,
-      5],
-  ];
+  final supabase = Supabase.instance.client;
+
+  List<Map<String, dynamic>> books = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchBooks();
+  }
+
+  Future<void> _fetchBooks({String? category}) async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      late List<Map<String, dynamic>> data;
+      
+      if (category == null || category == "All") {
+        data = await supabase.from('books').select().order('created_at', ascending: false);
+      } else {
+        data = await supabase.from('books').select().eq('category', category).order('created_at', ascending: false);
+      }
+
+      // Convert to format expected by BookCardWidget
+      final convertedBooks = data.map<Map<String, dynamic>>((book) {
+        return {
+          'id': book['id'],
+          'image_url': book['image_url'] ?? 'assets/images/book1.png',
+          'title': book['title'] ?? 'Unknown Title',
+          'price': book['price']?.toString() ?? '0.00',
+          'vendor_image': book['vendor_image'] ?? 'assets/images/vendor1.gif',
+          'description': book['description'] ?? 'No description available',
+          'review': book['review'] ?? 0,
+          'category': book['category'] ?? 'Unknown',
+        };
+      }).toList();
+
+      setState(() {
+        books = convertedBooks;
+        isLoading = false;
+      });
+    } catch (e) {
+      print('Error fetching books: $e');
+      setState(() {
+        books = [];
+        isLoading = false;
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error loading books: $e')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,11 +102,14 @@ class _CategoryPageState extends State<CategoryPage> {
                 children: List.generate(
                   categories.length,
                   (index) => GestureDetector(
-                    onTap: () => setState(() {
-                      _selectedCategory = index;
-                    }),
+                    onTap: () {
+                      setState(() {
+                        _selectedCategory = index;
+                      });
+                      _fetchBooks(category: categories[index]);
+                    },
                     child: Text(
-                      categories.elementAt(index),
+                      categories[index],
                       style: _selectedCategory == index
                           ? TextStyle(
                               color: AppColors.greyscale900,
@@ -86,16 +130,63 @@ class _CategoryPageState extends State<CategoryPage> {
             ),
             SizedBox(height: 30),
             Expanded(
-              child: GridView.builder(
-                itemCount: books.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 10,
-                  crossAxisSpacing: 10,
-                  mainAxisExtent: 200,
-                ),
-                itemBuilder: (context, index) => BookCardWidget(book: books.elementAt(index), imagewidth: 127,)
-              ),
+              child: isLoading
+                  ? Center(
+                      child: CircularProgressIndicator(color: AppColors.primary500)
+                    )
+                  : books.isEmpty
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.library_books_outlined,
+                                size: 64,
+                                color: AppColors.greyscale300,
+                              ),
+                              SizedBox(height: 16),
+                              Text(
+                                "No books found",
+                                style: TextStyle(
+                                  color: AppColors.greyscale500,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              Text(
+                                "Try selecting a different category",
+                                style: TextStyle(
+                                  color: AppColors.greyscale400,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : GridView.builder(
+                          itemCount: books.length,
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 10,
+                            crossAxisSpacing: 10,
+                            mainAxisExtent: 200,
+                          ),
+                          itemBuilder: (context, index) {
+                            final book = books[index];
+                            return BookCardWidget(
+                              book: [
+                                book['image_url'],
+                                book['title'],
+                                book['price'],
+                                book['vendor_image'],
+                                book['description'],
+                                book['review'],
+                              ],
+                              imagewidth: 127,
+                              bookId: book['id'],
+                            );
+                          },
+                        ),
             ),
           ],
         ),

@@ -5,6 +5,7 @@ import 'package:bazar/views/widgets/book_card_widget.dart';
 import 'package:bazar/views/widgets/purple_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,35 +15,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  static const String lorem =
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Viverra dignissim ac ac ac. Nibh et sed ac, eget malesuada.";
   PageController _pageController = PageController(initialPage: 0);
-  List<List<dynamic>> topbooks = [
-    [
-      "assets/images/book1.png",
-      "The Kite Runner",
-      "14.99",
-      "assets/images/vendor3.png",
-      lorem,
-      4,
-    ],
-    [
-      "assets/images/book2.jpg",
-      "The Subtle Art",
-      "20.99",
-      "assets/images/vendor2.png",
-      lorem,
-      3,
-    ],
-    [
-      "assets/images/book3.jpg",
-      "The Art Of War",
-      "10.99",
-      "assets/images/vendor4.png",
-      lorem,
-      5,
-    ],
-  ];
+  final supabase = Supabase.instance.client;
+  
+  List<dynamic> topbooks = [];
+  bool isLoadingBooks = true;
+  
   List<String> bestvendors = [
     "assets/images/vendor1.gif",
     "assets/images/vendor2.png",
@@ -50,11 +28,85 @@ class _HomePageState extends State<HomePage> {
     "assets/images/vendor4.png",
     "assets/images/vendor5.png",
   ];
+  
   List<List<String>> authors = [
     ["assets/images/author1.png", "John Freeman", "Writer"],
     ["assets/images/author2.png", "Tess Gunty", "Novelist"],
     ["assets/images/author3.png", "Richard Perston", "Writer"],
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchTopBooks();
+  }
+
+  Future<void> _fetchTopBooks() async {
+    setState(() {
+      isLoadingBooks = true;
+    });
+
+    try {
+      // Fetch books with high reviews for "Top of Week"
+      final data = await supabase
+          .from('books')
+          .select()
+          .gte('review', 4) // Get books with 4+ star reviews
+          .limit(6);
+
+      // Convert database format to match existing book card widget expectations
+      final convertedBooks = data.map((book) => {
+        'id': book['id'],
+        'title': book['title'],
+        'price': book['price'].toString(),
+        'description': book['description'],
+        'image_url': book['image_url'],
+        'vendor_image': book['vendor_image'],
+        'review': book['review'],
+        'category': book['category'],
+      }).toList();
+
+      setState(() {
+        topbooks = convertedBooks;
+        isLoadingBooks = false;
+      });
+    } catch (e) {
+      print('Error fetching top books: $e');
+      // Fallback to hardcoded data if database fails
+      setState(() {
+        topbooks = [
+          {
+            'id': null,
+            'image_url': "assets/images/book1.png",
+            'title': "The Kite Runner",
+            'price': "14.99",
+            'vendor_image': "assets/images/vendor3.png",
+            'description': "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Viverra dignissim ac ac ac. Nibh et sed ac, eget malesuada.",
+            'review': 4,
+          },
+          {
+            'id': null,
+            'image_url': "assets/images/book2.jpg",
+            'title': "The Subtle Art",
+            'price': "20.99",
+            'vendor_image': "assets/images/vendor2.png",
+            'description': "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Viverra dignissim ac ac ac. Nibh et sed ac, eget malesuada.",
+            'review': 3,
+          },
+          {
+            'id': null,
+            'image_url': "assets/images/book3.jpg",
+            'title': "The Art Of War",
+            'price': "10.99",
+            'vendor_image': "assets/images/vendor4.png",
+            'description': "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Viverra dignissim ac ac ac. Nibh et sed ac, eget malesuada.",
+            'review': 5,
+          },
+        ];
+        isLoadingBooks = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -147,14 +199,6 @@ class _HomePageState extends State<HomePage> {
                       dotColor: AppColors.greyscale200,
                       spacing: 6,
                     ),
-                    // TODO: implement scrolling later
-                    // onDotClicked: (index) {
-                    //   _pageController.animateToPage(
-                    //     index,
-                    //     duration: const Duration(milliseconds: 500),
-                    //     curve: Curves.ease,
-                    //   );
-                    // },
                   ),
                 ],
               ),
@@ -186,17 +230,37 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ],
                   ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      spacing: 10,
-                      children: List.generate(
-                        topbooks.length,
-                        (index) =>
-                            BookCardWidget(book: topbooks.elementAt(index), imagewidth: 127,),
-                      ),
-                    ),
-                  ),
+                  isLoadingBooks
+                      ? Container(
+                          height: 200,
+                          child: Center(
+                            child: CircularProgressIndicator(color: AppColors.primary500),
+                          ),
+                        )
+                      : SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            spacing: 10,
+                            children: List.generate(
+                              topbooks.length,
+                              (index) {
+                                final book = topbooks[index];
+                                return BookCardWidget(
+                                  book: [
+                                    book['image_url'],
+                                    book['title'],
+                                    book['price'],
+                                    book['vendor_image'],
+                                    book['description'],
+                                    book['review'],
+                                  ],
+                                  imagewidth: 127,
+                                  bookId: book['id'],
+                                );
+                              },
+                            ),
+                          ),
+                        ),
                 ],
               ),
               // Best Vendors

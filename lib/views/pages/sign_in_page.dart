@@ -1,14 +1,10 @@
 import 'package:bazar/constants/app_colors.dart';
 import 'package:bazar/constants/ktext_styles.dart';
-import 'package:bazar/models/user_model.dart';
-import 'package:bazar/providers/user_provider.dart';
 import 'package:bazar/views/pages/forgot_password_page.dart';
 import 'package:bazar/views/pages/main_page.dart';
 import 'package:bazar/views/widgets/purple_button_widget.dart';
 import 'package:bazar/views/widgets/text_field_authentication_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
