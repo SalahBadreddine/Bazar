@@ -29,7 +29,6 @@ class _AccountPageState extends State<AccountPage> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserProvider>(context).user;
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(

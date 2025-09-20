@@ -1,7 +1,11 @@
 import 'package:bazar/constants/app_colors.dart';
 import 'package:bazar/constants/ktext_styles.dart';
+import 'package:bazar/providers/user_provider.dart';
 import 'package:bazar/views/pages/account_page.dart';
+import 'package:bazar/views/pages/sign_in_page.dart';
+import 'package:bazar/views/pages/sign_up_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -16,8 +20,13 @@ class _ProfilePageState extends State<ProfilePage> {
     [Icons.location_on, "Address", const AccountPage()],
     [Icons.fire_extinguisher, "Offers", const AccountPage()],
   ];
+   @override
+  void initState() {
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserProvider>(context, listen: false).user;
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
@@ -55,7 +64,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Salah Badreddine",
+                      user?.username ?? "Guest",
                       style: TextStyle(
                         color: AppColors.greyscale900,
                         fontSize: 16,
@@ -72,7 +81,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ],
                 ),
                 trailing: TextButton(
-                  onPressed: () {},
+                  onPressed:() => Navigator.pushReplacement(context, MaterialPageRoute(builder:(context) => SignInPage(),)),
                   child: Text(
                     "Logout",
                     style: TextStyle(
