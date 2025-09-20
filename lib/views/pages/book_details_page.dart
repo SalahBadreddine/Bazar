@@ -1,10 +1,10 @@
 import 'package:bazar/constants/app_colors.dart';
 import 'package:bazar/constants/ktext_styles.dart';
-import 'package:bazar/views/widgets/purple_button_widget.dart';
+import 'package:bazar/providers/user_provider.dart';
 import 'package:bazar/views/pages/wishlist_page.dart';
+import 'package:bazar/views/widgets/purple_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:bazar/providers/user_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class BookDetailsPage extends StatefulWidget {
@@ -49,7 +49,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
     } else {
       await _findBookByTitle();
     }
-    
+
     if (actualBookId != null) {
       await _checkIfInWishlist();
     }
@@ -63,7 +63,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
           .select('id')
           .eq('title', widget.title)
           .maybeSingle();
-      
+
       if (response != null) {
         actualBookId = response['id'] as String;
       }
@@ -75,7 +75,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
   Future<void> _checkIfInWishlist() async {
     final supabase = Supabase.instance.client;
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    
+
     if (userProvider.user == null || actualBookId == null) return;
 
     try {
@@ -130,7 +130,6 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
 
     try {
       if (isInWishlist) {
-        // Remove from wishlist
         await supabase
             .from('wishlists')
             .delete()
@@ -174,7 +173,9 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: ${e.toString().contains('duplicate') ? 'Already in wishlist' : 'Something went wrong'}'),
+            content: Text(
+              'Error: ${e.toString().contains('duplicate') ? 'Already in wishlist' : 'Something went wrong'}',
+            ),
             backgroundColor: AppColors.red,
           ),
         );
@@ -273,7 +274,9 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                         )
                       : Icon(
                           isInWishlist ? Icons.favorite : Icons.favorite_border,
-                          color: isInWishlist ? AppColors.red : AppColors.greyscale400,
+                          color: isInWishlist
+                              ? AppColors.red
+                              : AppColors.greyscale400,
                           size: 28,
                         ),
                 ),
@@ -282,7 +285,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
             SizedBox(height: 10),
             Image.asset(
               widget.vendorImage,
-              width: 79,
+              width: 60,
               fit: BoxFit.fitWidth,
               errorBuilder: (context, error, stackTrace) {
                 return Container(
@@ -335,14 +338,16 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
                 ),
               ],
             ),
-            Spacer(),
+            SizedBox(height: 20),
             Row(
               spacing: 10,
               children: [
                 Expanded(
                   flex: 5,
                   child: PurpleButtonWidget(
-                    text: isInWishlist ? "Remove from Wishlist" : "Add to Wishlist",
+                    text: isInWishlist
+                        ? "Remove from Wishlist"
+                        : "Add to Wishlist",
                     onPressed: isLoading ? () {} : _toggleWishlist,
                   ),
                 ),

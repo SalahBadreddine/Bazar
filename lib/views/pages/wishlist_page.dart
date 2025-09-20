@@ -227,7 +227,7 @@ class _WishlistPageState extends State<WishlistPage> {
                 description: book['description']?.toString() ?? 'No description available',
                 bookReview: (book['review'] as num?)?.toInt() ?? 0,
                 bookId: book['id']?.toString(),
-                price: book['price']?.toString() ?? '0.00',
+                price: book['price'] ,
               ),
             ),
           );
@@ -277,7 +277,7 @@ class _WishlistPageState extends State<WishlistPage> {
                     ),
                     SizedBox(height: 6),
                     Text(
-                      "\${book['price']?.toString() ?? '0.00'}",
+                      "\$${book['price']?.toString() ?? '0.00'}",
                       style: TextStyle(
                         color: AppColors.primary500,
                         fontSize: 16,
