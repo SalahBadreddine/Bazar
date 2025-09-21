@@ -3,7 +3,6 @@ import 'package:bazar/constants/ktext_styles.dart';
 import 'package:bazar/providers/user_provider.dart';
 import 'package:bazar/views/pages/account_page.dart';
 import 'package:bazar/views/pages/sign_in_page.dart';
-import 'package:bazar/views/pages/sign_up_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
